@@ -1,5 +1,5 @@
 import scrape
-import calendar
+import calendar_utils
 from pprint import pprint
 from datetime import datetime
 
@@ -66,11 +66,16 @@ def merge(calendar_events, website_events):
     calendar_events, website_events = mark_pairs_matched(calendar_events, website_events)
 
     # Delete unmatched calendar events
-    calendar_delete_ids = [x['id'] for x in calendar_events if not x['match']]
+    for event in calendar_events:
+        if not event['match']:
+            print('Deleting ', event['id'])
+            calendar_utils.delete(event['id'])
 
     # Insert new calendar events
-    calendar_new_entries = [x for x in website_events if not x['match']]
-    pprint(calendar_new_entries)
+    for event in website_events:
+        if not event['match']:
+            print('Adding ', event['description'])
+            calendar_utils.add(event)
 
 if __name__ == '__main__':
-    merge(calendar.event_list(), scrape.main())
+    merge(calendar_utils.event_list(), scrape.main())

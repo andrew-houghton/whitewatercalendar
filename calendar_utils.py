@@ -27,6 +27,27 @@ def event_list():
     return events_result.get('items', [])
 
 
-def
+def delete(event_id):
+    service = get_creds()
+    service.events().delete(calendarId=CALENDAR_ID, eventId=event_id).execute()
+
+
+def add(event_details):
+    service = get_creds()
+    event = {
+        'summary': event_details['description'],
+        'location': 'Penrith Whitewater Stadium, McCarthys Ln, Cranebrook NSW 2749, Australia',
+        'start': {
+            'dateTime': event_details['start'].isoformat(),
+            'timeZone': 'Australia/Sydney',
+        },
+        'end': {
+            'dateTime': event_details['end'].isoformat(),
+            'timeZone': 'Australia/Sydney',
+        }
+    }
+    event = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
+    print('Event created: %s' % (event.get('htmlLink')))
+
 if __name__ == '__main__':
     pprint(event_list())
