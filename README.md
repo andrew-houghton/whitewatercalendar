@@ -6,6 +6,5 @@ This script scrapes data from penrith whiteater website about future kayaking da
 
 1. Get current events in calendar.
 2. Get events from penrith website.
-3. Crop events outside 3 month window.
-4. For each day with an event on website update calendar events for that day.
-5. Remove calendar events not found on website.
+3. If events from the website are already in the calendar ignore them.
+4. Otherwise delete the old events on the calendar and add all the new events.
