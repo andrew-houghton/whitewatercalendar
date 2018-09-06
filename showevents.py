@@ -22,17 +22,11 @@ def main():
     service = build('calendar', 'v3', http=creds.authorize(Http()))
 
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=now,
-                                          maxResults=10, singleEvents=True,
+    # 'Z' indicates UTC time
+    now = datetime.datetime.utcnow().isoformat() + 'Z'
+    events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=now, singleEvents=True,
                                           orderBy='startTime').execute()
-    events = events_result.get('items', [])
-
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        pprint(event)
+    return events_result.get('items', [])
 
 if __name__ == '__main__':
-    main()
+    pprint(main())

@@ -46,10 +46,6 @@ def process_day_html(soup):
     return day_info
 
 
-days_html = get_day_html_array(get_soup())
-days_data = [x for x in map(process_day_html,days_html) if x is not None]
-
-
 def handle_times(session, day_date):
     session['start_datetime'] = datetime.combine(
         day_date, datetime.strptime(session['start'], '%H:%M').time())
@@ -69,9 +65,15 @@ def handle_dates(day):
 
     # Add time values for sessions
     map_function = partial(handle_times, day_date=day['date'])
-    day['sessions'] = map(map_function, day['sessions'])
+    day['sessions'] = list(map(map_function, day['sessions']))
     return day
 
-days_data = map(handle_dates, days_data)
 
-pprint(days_data)
+def main():
+    days_html = get_day_html_array(get_soup())
+    days_data = [x for x in map(process_day_html, days_html) if x is not None]
+    days_data = list(map(handle_dates, days_data))
+    return days_data
+
+if __name__ == '__main__':
+    pprint(main())
