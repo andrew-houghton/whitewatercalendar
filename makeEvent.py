@@ -26,11 +26,11 @@ def main():
         'location': 'Penrith Whitewater Stadium, McCarthys Ln, Cranebrook NSW 2749',
         'description': 'Whitewater Rafting & Recreational Paddling',
         'start': {
-            'dateTime': '2018-09-08T10:30:00+10:00',
+            'dateTime': '2018-09-09T10:30:00+10:00',
             'timeZone': 'Australia/Sydney',
         },
         'end': {
-            'dateTime': '2018-09-08T15:00:00+10:00',
+            'dateTime': '2018-09-09T15:00:00+10:00',
             'timeZone': 'Australia/Sydney',
         }
     }
