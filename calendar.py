@@ -10,23 +10,23 @@ SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 CALENDAR_ID = 'nhae532jfn0e0qc9ghb0d2s3i8@group.calendar.google.com'
 
 
-def main():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
+def get_creds():
     store = file.Storage('token.json')
     creds = store.get()
     if not creds or creds.invalid:
         flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
         creds = tools.run_flow(flow, store)
-    service = build('calendar', 'v3', http=creds.authorize(Http()))
+    return build('calendar', 'v3', http=creds.authorize(Http()))
 
-    # Call the Calendar API
-    # 'Z' indicates UTC time
+
+def event_list():
+    service = get_creds()
     now = datetime.datetime.utcnow().isoformat() + 'Z'
     events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=now, singleEvents=True,
                                           orderBy='startTime').execute()
     return events_result.get('items', [])
 
+
+def
 if __name__ == '__main__':
-    pprint(main())
+    pprint(event_list())

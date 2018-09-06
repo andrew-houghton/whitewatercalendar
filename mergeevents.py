@@ -1,5 +1,5 @@
 import scrape
-import showevents
+import calendar
 from pprint import pprint
 from datetime import datetime
 
@@ -73,4 +73,4 @@ def merge(calendar_events, website_events):
     pprint(calendar_new_entries)
 
 if __name__ == '__main__':
-    merge(showevents.main(), scrape.main())
+    merge(calendar.event_list(), scrape.main())
