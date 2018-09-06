@@ -7,42 +7,44 @@ from time import strptime
 from functools import partial
 
 
-# SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
-# html_doc = requests.get(SCRAPING_URL).text
-with open('content.html', 'r') as handle:
-    html_doc = handle.read()
+def get_soup():
+    # SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
+    # html_doc = requests.get(SCRAPING_URL).text
+    with open('content.html', 'r') as handle:
+        html_doc = handle.read()
+    return BeautifulSoup(html_doc, 'html.parser')
 
-soup = BeautifulSoup(html_doc, 'html.parser')
-events_section = soup.find_all("div", class_="events-table")[0]
-events = events_section.find_all("div", class_="daily-entry")
 
-all_days = []
+def get_day_html_array(soup):
+    events_section = soup.find_all("div", class_="events-table")[0]
+    return events_section.find_all("div", class_="daily-entry")
 
-for day in events:
-    if not day.findAll(text='Please call 02 4730 4333 to check water availability.'):
-        day_info = {'sessions': []}
 
-        # Get date info
-        day_info['month'] = day.find_all("span", class_="month")[
-            0].find(text=True)
-        day_info['day_num'] = day.find_all("span", class_="day")[
-            0].find(text=True)
-        all_days.append(day_info)
+def process_session_html(soup):
+    return {
+        'start': soup.find_all("span", class_="start")[0].find(text=True),
+        'end': soup.find_all("span", class_="end")[0].find(text=True),
+        'description': soup.find_all("p")[1].find(text=True)
+    }
 
-        # Get event info
-        for session in day.find_all("div", class_="item"):
-            session_info = {}
 
-            # Get start and finish time
-            session_info['start'] = session.find_all("span", class_="start")[
-                0].find(text=True)
-            session_info['end'] = session.find_all("span", class_="end")[
-                0].find(text=True)
-            # Get event description
-            session_info['description'] = session.find_all("p")[
-                1].find(text=True)
+def extract_date_from_html(soup):
+    month = soup.find_all("span", class_="month")[0].find(text=True)
+    day = soup.find_all("span", class_="day")[0].find(text=True)
+    return (month, day)
 
-            day_info['sessions'].append(session_info)
+
+def process_day_html(soup):
+    if soup.findAll(text='Please call 02 4730 4333 to check water availability.'):
+        return None
+    day_info = {}
+    day_info['month'], day_info['day_num'] = extract_date_from_html(soup)
+    day_info['sessions'] = map(process_session_html, soup.find_all("div", class_="item"))
+    return day_info
+
+
+days_html = get_day_html_array(get_soup())
+days_data = [x for x in map(process_day_html,days_html) if x is not None]
 
 
 def handle_times(session, day_date):
@@ -62,6 +64,6 @@ def handle_dates(day):
     day['sessions'] = map(map_function, day['sessions'])
     return day
 
-all_days = map(handle_dates, all_days)
+days_data = map(handle_dates, days_data)
 
-pprint(all_days[0])
+pprint(days_data)
