@@ -22,9 +22,8 @@ def main():
     service = build('calendar', 'v3', http=creds.authorize(Http()))
 
     event = {
-        'summary': 'Penrith Whitewater',
-        'location': 'Penrith Whitewater Stadium, McCarthys Ln, Cranebrook NSW 2749',
-        'description': 'Whitewater Rafting & Recreational Paddling',
+        'summary': 'Whitewater Rafting & Recreational Paddling',
+        'location': 'Penrith Whitewater Stadium, McCarthys Ln, Cranebrook NSW 2749, Australia',
         'start': {
             'dateTime': '2018-09-09T10:30:00+10:00',
             'timeZone': 'Australia/Sydney',
