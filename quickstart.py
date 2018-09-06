@@ -6,7 +6,7 @@ from oauth2client import file, client, tools
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
-CALENDAR_ID = 'nhae532jfn0e0qc9ghb0d2s3i8'
+CALENDAR_ID = 'nhae532jfn0e0qc9ghb0d2s3i8@group.calendar.google.com'
 
 
 def main():
@@ -20,25 +20,19 @@ def main():
         creds = tools.run_flow(flow, store)
     service = build('calendar', 'v3', http=creds.authorize(Http()))
 
-    # List all calendars
-    calendar_list = service.calendarList().list().execute()
-    for calendar_list_entry in calendar_list['items']:
-        print(calendar_list_entry['id'])
-        print(calendar_list_entry['summary'])
+    # Call the Calendar API
+    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    print('Getting the upcoming 10 events')
+    events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=now,
+                                          maxResults=10, singleEvents=True,
+                                          orderBy='startTime').execute()
+    events = events_result.get('items', [])
 
-    # # Call the Calendar API
-    # now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    # print('Getting the upcoming 10 events')
-    # events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=now,
-    #                                       maxResults=10, singleEvents=True,
-    #                                       orderBy='startTime').execute()
-    # events = events_result.get('items', [])
-
-    # if not events:
-    #     print('No upcoming events found.')
-    # for event in events:
-    #     start = event['start'].get('dateTime', event['start'].get('date'))
-    #     print(start, event['summary'])
+    if not events:
+        print('No upcoming events found.')
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        print(start, event['summary'])
 
 if __name__ == '__main__':
     main()
