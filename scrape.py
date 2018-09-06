@@ -47,12 +47,10 @@ def process_day_html(soup):
 
 
 def handle_times(session, day_date):
-    session['start_datetime'] = datetime.combine(
+    session['start'] = datetime.combine(
         day_date, datetime.strptime(session['start'], '%H:%M').time())
-    session['end_datetime'] = datetime.combine(
+    session['end'] = datetime.combine(
         day_date, datetime.strptime(session['end'], '%H:%M').time())
-    del session['start']
-    del session['end']
     return session
 
 
