@@ -6,9 +6,12 @@ from datetime import datetime
 from time import strptime
 from functools import partial
 
+# Consts
+# SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
+UNAVAILABLE = 'Please call 02 4730 4333 to check water availability.'
+
 
 def get_soup():
-    # SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
     # html_doc = requests.get(SCRAPING_URL).text
     with open('content.html', 'r') as handle:
         html_doc = handle.read()
@@ -35,7 +38,7 @@ def extract_date_from_html(soup):
 
 
 def process_day_html(soup):
-    if soup.findAll(text='Please call 02 4730 4333 to check water availability.'):
+    if soup.findAll(text=UNAVAILABLE):
         return None
     day_info = {}
     day_info['month'], day_info['day_num'] = extract_date_from_html(soup)
@@ -52,6 +55,8 @@ def handle_times(session, day_date):
         day_date, datetime.strptime(session['start'], '%H:%M').time())
     session['end_datetime'] = datetime.combine(
         day_date, datetime.strptime(session['end'], '%H:%M').time())
+    del session['start']
+    del session['end']
     return session
 
 
@@ -59,6 +64,9 @@ def handle_dates(day):
     # Get date of day
     day['date'] = date(2018, strptime(
         day['month'], '%b').tm_mon, int(day['day_num']))
+    del day['day_num']
+    del day['month']
+
     # Add time values for sessions
     map_function = partial(handle_times, day_date=day['date'])
     day['sessions'] = map(map_function, day['sessions'])
