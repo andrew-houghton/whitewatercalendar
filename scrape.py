@@ -7,14 +7,14 @@ from time import strptime
 from functools import partial
 
 # Consts
-# SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
+SCRAPING_URL = "http://www.penrithwhitewater.com.au/water-times-and-events"
 UNAVAILABLE = 'Please call 02 4730 4333 to check water availability.'
 
 
 def get_soup():
-    # html_doc = requests.get(SCRAPING_URL).text
-    with open('content.html', 'r') as handle:
-        html_doc = handle.read()
+    html_doc = requests.get(SCRAPING_URL).text
+    # with open('content.html', 'r') as handle:
+    # html_doc = handle.read()
     return BeautifulSoup(html_doc, 'html.parser')
 
 

@@ -9,9 +9,12 @@ def events_match(c_event, w_event):
 
 
 def to_bloody_datetime(date):
-    if ":" == date[-3:-2]:
-        date = date[:-3] + date[-2:]
-    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").replace(tzinfo=None)
+    print(date)
+    # if ":" == date[-3:-2]:
+    #     date = date[:-3] + date[-2:]
+    date = date[:-6]
+    print(date)
+    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=None)
 
 
 def strip_event_details(calendar_event):
